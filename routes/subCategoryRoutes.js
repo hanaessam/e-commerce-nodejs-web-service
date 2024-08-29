@@ -1,12 +1,17 @@
 const express = require("express");
 
-const router = express.Router();
+// mergeParams: allows access to the parent route params
+const router = express.Router(
+  { mergeParams: true }
+);
 const {
   getAllSubCategories,
   createSubCategory,
   getSubCategory,
   updateSubCategory,
   deleteSubCategory,
+  setCategoryIdToParent,
+  getAllSubCategoriesByCategoryFilter
 } = require("../controllers/subCategoryController");
 const {
   getSubCategoryValidator,
@@ -17,8 +22,8 @@ const {
 
 router
   .route("/")
-  .get(getAllSubCategories)
-  .post(createSubCategoryValidator, createSubCategory);
+  .get(getAllSubCategoriesByCategoryFilter,getAllSubCategories)
+  .post(setCategoryIdToParent,createSubCategoryValidator, createSubCategory);
 router
   .route("/:id")
   .get(getSubCategoryValidator, getSubCategory)

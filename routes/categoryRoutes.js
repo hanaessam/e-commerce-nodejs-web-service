@@ -14,6 +14,7 @@ const {
   updateCategoryValidator,
   deleteCategoryValidator,
 } = require("../utils/validators/categoryValidator");
+const subCategoryRouter = require("./subCategoryRoutes");
 
 router
   .route("/")
@@ -24,5 +25,8 @@ router
   .get(getCategoryValidator, getCategory)
   .put(updateCategoryValidator, updateCategory)
   .delete(deleteCategoryValidator, deleteCategory);
+  
+  router.use("/:categoryId/sub-categories", subCategoryRouter);
+
 
 module.exports = router;
