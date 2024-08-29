@@ -4,8 +4,10 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const dbConnection = require("./config/database");
 const categoryRoutes = require("./routes/categoryRoutes");
+const subCategoryRoutes = require("./routes/subCategoryRoutes");
 const ErrorHandler = require("./utils/ErrorHandler");
 const globalErrorMiddlewareHandler = require("./middlewares/errorMiddleware");
+
 dotenv.config();
 
 // Database connection
@@ -26,7 +28,11 @@ app.get("/", (req, res) => {
   res.send("Helloooo World!");
 });
 
+// mounting routes 
 app.use("/api/v1/categories/", categoryRoutes);
+app.use("/api/v1/sub-categories/", subCategoryRoutes); 
+
+
 app.all("*", (req, res, next) => {
   // Create error and send to the global error handler middleware
   next(new ErrorHandler(400, `Can't find this route: ${req.originalUrl}`));
