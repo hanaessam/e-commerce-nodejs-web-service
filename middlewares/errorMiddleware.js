@@ -1,4 +1,4 @@
-const globalMiddlewareHandler = (err, req, res, next) => {
+const globalErrorMiddlewareHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
   if (process.env.NODE_ENV === "development") {
@@ -24,4 +24,4 @@ const sendErrorProd = (err, res) => {
     message: err.message,
   });
 };
-module.exports = globalMiddlewareHandler;
+module.exports = globalErrorMiddlewareHandler;

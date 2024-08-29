@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dbConnection = require("./config/database");
 const categoryRoutes = require("./routes/categoryRoutes");
 const ErrorHandler = require("./utils/ErrorHandler");
-const globalMiddlewareHandler = require("./middlewares/errorMiddleware");
+const globalErrorMiddlewareHandler = require("./middlewares/errorMiddleware");
 dotenv.config();
 
 // Database connection
@@ -33,7 +33,7 @@ app.all("*", (req, res, next) => {
 });
 
 // Global error handling middleware
-app.use(globalMiddlewareHandler);
+app.use(globalErrorMiddlewareHandler);
 
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
