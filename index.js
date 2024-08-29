@@ -29,13 +29,22 @@ app.get("/", (req, res) => {
 app.use("/api/v1/categories/", categoryRoutes);
 app.all("*", (req, res, next) => {
   // Create error and send to the global error handler middleware
-  next(new ErrorHandler(400,`Can't find this route: ${req.originalUrl}`));
+  next(new ErrorHandler(400, `Can't find this route: ${req.originalUrl}`));
 });
 
 // Global error handling middleware
 app.use(globalMiddlewareHandler);
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// Handle rejcected promises (outside of express)
+process.on("unhandledRejection", (err) => {
+  console.error(`Unhandled Rejection Error: ${err.name} : ${err.message}`);
+  server.close(() => {
+    console.error("Shutting down due to unhandled promise rejection...");
+    process.exit(1);
+  });
 });
