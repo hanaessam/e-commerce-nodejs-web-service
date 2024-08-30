@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const dbConnection = require("./config/database");
 const categoryRoutes = require("./routes/categoryRoutes");
 const subCategoryRoutes = require("./routes/subCategoryRoutes");
+const brandRoutes = require("./routes/brandRoutes");
 const ErrorHandler = require("./utils/ErrorHandler");
 const globalErrorMiddlewareHandler = require("./middlewares/errorMiddleware");
 
@@ -31,7 +32,7 @@ app.get("/", (req, res) => {
 // mounting routes 
 app.use("/api/v1/categories/", categoryRoutes);
 app.use("/api/v1/sub-categories/", subCategoryRoutes); 
-
+app.use("/api/v1/brands/", brandRoutes);
 
 app.all("*", (req, res, next) => {
   // Create error and send to the global error handler middleware
