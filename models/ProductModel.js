@@ -91,5 +91,16 @@ productSchema.pre("findOneAndUpdate", function (next) {
   next();
 });
 
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name"
+  }).populate({
+    path: "subCategories",
+    select: "name"
+  });
+  next();
+});
+
 const ProductModel = mongoose.model("Product", productSchema);
 module.exports = ProductModel;

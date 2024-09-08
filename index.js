@@ -30,9 +30,9 @@ app.get("/", (req, res) => {
   res.send("Helloooo World!");
 });
 
-// mounting routes 
+// mounting routes
 app.use("/api/v1/categories/", categoryRoutes);
-app.use("/api/v1/sub-categories/", subCategoryRoutes); 
+app.use("/api/v1/sub-categories/", subCategoryRoutes);
 app.use("/api/v1/brands/", brandRoutes);
 app.use("/api/v1/products/", productRoutes);
 
