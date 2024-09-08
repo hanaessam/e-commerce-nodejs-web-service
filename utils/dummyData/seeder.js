@@ -2,6 +2,9 @@ const fs = require('fs');
 require('colors');
 const dotenv = require('dotenv');
 const Product = require('../../models/productModel');
+const Category = require('../../models/categoryModel');
+const SubCategory = require('../../models/subCategoryModel');
+const Brand = require('../../models/brandModel');
 const dbConnection = require('../../config/database');
 
 dotenv.config({ path: '../../config.env' });
@@ -11,11 +14,16 @@ dbConnection();
 
 // Read data
 const products = JSON.parse(fs.readFileSync('./products.json'));
-
+const categories = JSON.parse(fs.readFileSync('./categories.json'));
+const subCategories = JSON.parse(fs.readFileSync('./subcategories.json'));
+const brands = JSON.parse(fs.readFileSync('./brands.json'));
 
 // Insert data into DB
 const insertData = async () => {
   try {
+    // await Category.create(categories);
+    // await SubCategory.create(subCategories);
+    // await Brand.create(brands);
     await Product.create(products);
 
     console.log('Data Inserted'.green.inverse);
@@ -29,6 +37,9 @@ const insertData = async () => {
 const destroyData = async () => {
   try {
     await Product.deleteMany();
+    await Category.deleteMany();
+    await SubCategory.deleteMany();
+    await Brand.deleteMany();
     console.log('Data Destroyed'.red.inverse);
     process.exit();
   } catch (error) {

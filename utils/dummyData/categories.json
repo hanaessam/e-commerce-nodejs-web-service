@@ -1,0 +1,17 @@
+[
+    {
+      "name": "Electronics",
+      "slug": "electronics",
+      "image": "electronics.jpg"
+    },
+    {
+      "name": "Fashion",
+      "slug": "fashion",
+      "image": "fashion.jpg"
+    },
+    {
+      "name": "Home Appliances",
+      "slug": "home-appliances",
+      "image": "home-appliances.jpg"
+    }
+  ]

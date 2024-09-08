@@ -1,5 +1,10 @@
+const sharp = require('sharp');
+const asyncHandler = require('express-async-handler');
+const { v4: uuidv4 } = require('uuid');
+
 const factory = require('../services/handlersFactory');
 const Brand = require('../models/brandModel');
+const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 
 // @desc    Get list of brands
 // @route   GET /api/v1/brands
@@ -25,3 +30,19 @@ exports.updateBrand = factory.updateOne(Brand);
 // @route   DELETE /api/v1/brands/:id
 // @access  Private
 exports.deleteBrand = factory.deleteOne(Brand);
+
+
+exports.uploadBrandImage = uploadSingleImage("image");
+
+exports.resizeBrandImage =  asyncHandler(async (req, res, next) => {
+    if (!req.file) return next();
+    const fileName = `brand-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`uploads/brands/${fileName}`);
+    // save image name to db
+    req.body.image = fileName;
+    next();
+  });

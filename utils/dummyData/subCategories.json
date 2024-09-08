@@ -1,0 +1,27 @@
+[
+    {
+      "name": "Mobile Phones",
+      "slug": "mobile-phones",
+      "category": "66de0979123d687f398bbbda"
+    },
+    {
+      "name": "Laptops",
+      "slug": "laptops",
+      "category": "66de0979123d687f398bbbda"
+    },
+    {
+      "name": "Men's Clothing",
+      "slug": "mens-clothing",
+      "category": "66de0979123d687f398bbbdb"
+    },
+    {
+      "name": "Women's Clothing",
+      "slug": "womens-clothing",
+      "category": "66de0979123d687f398bbbdb"
+    },
+    {
+      "name": "Kitchen Appliances",
+      "slug": "kitchen-appliances",
+      "category": "66de0979123d687f398bbbdc"
+    }
+  ]
