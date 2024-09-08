@@ -1,30 +1,28 @@
-const asyncHandler = require("express-async-handler");
-const Category = require("../models/CategoryModel");
-const ErrorHandler = require("../utils/ErrorHandler");
-const APIFeatures = require("../utils/APIFeatures");
-const handlersFactory = require("../services/handlersFactory");
+const factory = require('../services/handlersFactory');
+const Category = require('../models/categoryModel');
 
-// @desc    Get all categories
+// @desc    Get list of categories
 // @route   GET /api/v1/categories
 // @access  Public
-exports.getAllCategories = handlersFactory.getAll(Category);
 
-// @desc    Get a single category by id
+exports.getCategories = factory.getAll(Category);
+
+// @desc    Get specific category by id
 // @route   GET /api/v1/categories/:id
 // @access  Public
-exports.getCategory = handlersFactory.getOne(Category);
+exports.getCategory = factory.getOne(Category);
 
-// @desc    Create a new category
-// @route   POST /api/v1/categories
+// @desc    Create category
+// @route   POST  /api/v1/categories
 // @access  Private
-exports.createCategory = handlersFactory.createOne(Category);
+exports.createCategory = factory.createOne(Category);
 
-// @desc    Update a category
+// @desc    Update specific category
 // @route   PUT /api/v1/categories/:id
 // @access  Private
-exports.updateCategory = handlersFactory.updateOne(Category);
+exports.updateCategory = factory.updateOne(Category);
 
-// @desc    Delete a category
+// @desc    Delete specific category
 // @route   DELETE /api/v1/categories/:id
 // @access  Private
-exports.deleteCategory = handlersFactory.deleteOne(Category);
+exports.deleteCategory = factory.deleteOne(Category);

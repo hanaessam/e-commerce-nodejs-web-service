@@ -1,41 +1,22 @@
-const mongoose = require("mongoose");
-const slugify = require("slugify");
-
+const mongoose = require('mongoose');
+// 1- Create Schema
 const brandSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Brand name is required"],
-      unique: [true, "Brand name must be unique"],
-      minLegnth: [2, "Brand name must be at least 2 characters long"],
-      trim: true,
+      required: [true, 'Brand required'],
+      unique: [true, 'Brand must be unique'],
+      minlength: [3, 'Too short Brand name'],
+      trim: true
     },
-
     slug: {
       type: String,
-      lowercase: true,
-      unique: true,
+      lowercase: true
     },
-
     image: String,
   },
   { timestamps: true }
 );
 
-brandSchema.pre("save", function (next) {
-  if (this.isModified("name")) {
-    this.slug = slugify(this.name);
-  }
-  next();
-});
-
-brandSchema.pre("findOneAndUpdate", function (next) {
-  const update = this.getUpdate();
-  if (update.name) {
-    update.slug = slugify(update.name);
-  }
-  next();
-});
-
-const BrandModel = mongoose.model("Brand", brandSchema);
-module.exports = BrandModel;
+// 2- Create model
+module.exports = mongoose.model('Brand', brandSchema);

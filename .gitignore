@@ -1,23 +1,7 @@
-# Node.js
 node_modules/
-npm-debug.log
-yarn-error.log
 
-# IDEs and editors
-.vscode/
+config.env
 
-
-# Logs
-logs/
-*.log
-
-# Build output
-dist/
-build/
-out/
-
-# Environment
-.env
-
-# Misc
 .eslintrc.json
+
+.vscode/

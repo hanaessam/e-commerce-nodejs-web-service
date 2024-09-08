@@ -54,7 +54,7 @@ class APIFeatures {
     return this;
   }
 
-  paginate(documentCount) {
+  paginate(countDocuments) {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 50;
     const skip = (page - 1) * limit;
@@ -64,10 +64,10 @@ class APIFeatures {
     const pagination = {};
     pagination.currentPage = page;
     pagination.limit = limit;
-    pagination.numberOfPages = Math.ceil(documentCount / limit);
+    pagination.numberOfPages = Math.ceil(countDocuments / limit);
 
     // next page
-    if (endIndex < documentCount) {
+    if (endIndex < countDocuments) {
       pagination.next = page + 1;
     }
     if (skip > 0) {
@@ -78,7 +78,6 @@ class APIFeatures {
     this.paginationResult = pagination;
     return this;
   }
-
 }
 
 module.exports = APIFeatures;

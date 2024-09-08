@@ -1,44 +1,25 @@
-const mongoose = require("mongoose");
-const slugify = require("slugify");
-
+const mongoose = require('mongoose');
+// 1- Create Schema
 const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Category name is required"],
-      unique: [true, "Category name must be unique"],
-      minLegnth: [3, "Category name must be at least 3 characters long"],
-      trim: true,
+      required: [true, 'Category required'],
+      unique: [true, 'Category must be unique'],
+      minlength: [3, 'Too short category name'],
+      trim: true
     },
-
-    // A and B => localhost:8000/a-and-b
+    // A and B => shopping.com/a-and-b
     slug: {
       type: String,
       lowercase: true,
-      unique: true,
     },
-
     image: String,
   },
   { timestamps: true }
 );
 
-// Pre-save hook to generate slug before saving the document
-categorySchema.pre("save", function (next) {
-  if (this.isModified("name")) {
-    this.slug = slugify(this.name);
-  }
-  next();
-});
+// 2- Create model
+const CategoryModel = mongoose.model('Category', categorySchema);
 
-// on update generate slug
-categorySchema.pre("findOneAndUpdate", function (next) {
-  const update = this.getUpdate();
-  if (update.name) {
-    update.slug = slugify(update.name);
-  }
-  next();
-});
-
-const CategoryModel = mongoose.model("Category", categorySchema);
 module.exports = CategoryModel;

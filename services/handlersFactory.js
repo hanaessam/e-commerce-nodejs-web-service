@@ -1,17 +1,16 @@
-const asyncHandler = require("express-async-handler");
-const ErrorHandler = require("../utils/ErrorHandler");
-const APIFeatures = require("../utils/APIFeatures");
+const asyncHandler = require('express-async-handler');
+const APIError = require('../utils/APIError');
+const APIFeatures = require('../utils/APIFeatures');
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const document = await Model.findByIdAndDelete(id);
+
     if (!document) {
-      return next(
-        new ErrorHandler(404, `${Model.modelName} with id ${id} not found`)
-      );
+      return next(new APIError(`No document for this id ${id}`, 404));
     }
-    res.status(204).json({ data: null });
+    res.status(204).send();
   });
 
 exports.updateOne = (Model) =>
@@ -22,7 +21,7 @@ exports.updateOne = (Model) =>
 
     if (!document) {
       return next(
-        new ErrorHandler(404, `No document for this id ${req.params.id}`)
+        new APIError(`No document for this id ${req.params.id}`, 404)
       );
     }
     res.status(200).json({ data: document });
@@ -39,12 +38,12 @@ exports.getOne = (Model) =>
     const { id } = req.params;
     const document = await Model.findById(id);
     if (!document) {
-      return next(new ErrorHandler(404, `No document for this id ${id}`));
+      return next(new APIError(`No document for this id ${id}`, 404));
     }
     res.status(200).json({ data: document });
   });
 
-exports.getAll = (Model, modelName = "") =>
+exports.getAll = (Model, modelName = '') =>
   asyncHandler(async (req, res) => {
     let filter = {};
     if (req.filterObj) {

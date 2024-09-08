@@ -1,12 +1,10 @@
-const dotenv = require("dotenv");
-
-dotenv.config();
-
 const fs = require('fs');
-const Product = require('../../models/ProductModel');
-const dbConnection = require("../../config/database");
+require('colors');
+const dotenv = require('dotenv');
+const Product = require('../../models/productModel');
+const dbConnection = require('../../config/database');
 
-
+dotenv.config({ path: '../../config.env' });
 
 // connect to DB
 dbConnection();
@@ -19,7 +17,8 @@ const products = JSON.parse(fs.readFileSync('./products.json'));
 const insertData = async () => {
   try {
     await Product.create(products);
-    console.log("Data inserted");
+
+    console.log('Data Inserted'.green.inverse);
     process.exit();
   } catch (error) {
     console.log(error);
@@ -30,7 +29,7 @@ const insertData = async () => {
 const destroyData = async () => {
   try {
     await Product.deleteMany();
-    console.log("Data deleted");
+    console.log('Data Destroyed'.red.inverse);
     process.exit();
   } catch (error) {
     console.log(error);

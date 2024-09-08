@@ -1,59 +1,54 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const morgan = require("morgan");
-const mongoose = require("mongoose");
-const dbConnection = require("./config/database");
-const categoryRoutes = require("./routes/categoryRoutes");
-const subCategoryRoutes = require("./routes/subCategoryRoutes");
-const brandRoutes = require("./routes/brandRoutes");
-const productRoutes = require("./routes/productRoutes");
-const ErrorHandler = require("./utils/ErrorHandler");
-const globalErrorMiddlewareHandler = require("./middlewares/errorMiddleware");
+const express = require('express');
+const dotenv = require('dotenv');
+const morgan = require('morgan');
 
-dotenv.config();
+dotenv.config({ path: 'config.env' });
+const APIError = require('./utils/APIError');
+const globalError = require('./middlewares/errorMiddleware');
+const dbConnection = require('./config/database');
+// Routes
+const categoryRoute = require('./routes/categoryRoutes');
+const subCategoryRoute = require('./routes/subCategoryRoutes');
+const brandRoute = require('./routes/brandRoutes');
+const productRoute = require('./routes/productRoutes');
 
-// Database connection
+// Connect with db
 dbConnection();
 
+// express app
 const app = express();
 
 // Middlewares
 app.use(express.json());
-// Logging middleware
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
-// Routes
-app.get("/", (req, res) => {
-  res.send("Helloooo World!");
+// Mount Routes
+app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/sub-categories', subCategoryRoute);
+app.use('/api/v1/brands', brandRoute);
+app.use('/api/v1/products', productRoute);
+
+app.all('*', (req, res, next) => {
+  next(new APIError(`Can't find this route: ${req.originalUrl}`, 400));
 });
 
-// mounting routes
-app.use("/api/v1/categories/", categoryRoutes);
-app.use("/api/v1/sub-categories/", subCategoryRoutes);
-app.use("/api/v1/brands/", brandRoutes);
-app.use("/api/v1/products/", productRoutes);
-
-app.all("*", (req, res, next) => {
-  // Create error and send to the global error handler middleware
-  next(new ErrorHandler(400, `Can't find this route: ${req.originalUrl}`));
-});
-
-// Global error handling middleware
-app.use(globalErrorMiddlewareHandler);
+// Global error handling middleware for express
+app.use(globalError);
 
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`App running running on port ${PORT}`);
 });
 
-// Handle rejcected promises (outside of express)
-process.on("unhandledRejection", (err) => {
-  console.error(`Unhandled Rejection Error: ${err.name} : ${err.message}`);
+// Handle rejection outside express
+process.on('unhandledRejection', (err) => {
+  console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
   server.close(() => {
-    console.error("Shutting down due to unhandled promise rejection...");
+    console.error(`Shutting down....`);
     process.exit(1);
   });
 });

@@ -1,30 +1,26 @@
-const asyncHandler = require("express-async-handler");
-const Product = require("../models/ProductModel");
-const ErrorHandler = require("../utils/ErrorHandler");
-const APIFeatures = require("../utils/APIFeatures");
-const handlersFactory = require("../services/handlersFactory");
+const factory = require('../services/handlersFactory');
+const Product = require('../models/productModel');
 
-// @desc    Get all products
+// @desc    Get list of products
 // @route   GET /api/v1/products
 // @access  Public
-exports.getAllProducts = handlersFactory.getAll(Product, 'Products');
+exports.getProducts = factory.getAll(Product, 'Products');
 
-// @desc    Get a single product by id
+// @desc    Get specific product by id
 // @route   GET /api/v1/products/:id
 // @access  Public
-exports.getProduct = handlersFactory.getOne(Product);
+exports.getProduct = factory.getOne(Product);
 
-// @desc    Create a new product
-// @route   POST /api/v1/products
+// @desc    Create product
+// @route   POST  /api/v1/products
 // @access  Private
-exports.createProduct = handlersFactory.createOne(Product);
-
-// @desc    Update a product
+exports.createProduct = factory.createOne(Product);
+// @desc    Update specific product
 // @route   PUT /api/v1/products/:id
 // @access  Private
-exports.updateProduct = handlersFactory.updateOne(Product);
+exports.updateProduct = factory.updateOne(Product);
 
-// @desc    Delete a product
+// @desc    Delete specific product
 // @route   DELETE /api/v1/products/:id
 // @access  Private
-exports.deleteProduct = handlersFactory.deleteOne(Product);
+exports.deleteProduct = factory.deleteOne(Product);

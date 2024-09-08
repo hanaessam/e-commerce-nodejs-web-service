@@ -1,30 +1,27 @@
-const asyncHandler = require("express-async-handler");
-const Brand = require("../models/BrandModel");
-const ErrorHandler = require("../utils/ErrorHandler");
-const APIFeatures = require("../utils/APIFeatures");
-const handlersFactory = require("../services/handlersFactory");
+const factory = require('../services/handlersFactory');
+const Brand = require('../models/brandModel');
 
-// @desc    Get all brands
+// @desc    Get list of brands
 // @route   GET /api/v1/brands
 // @access  Public
-exports.getBrands = handlersFactory.getAll(Brand);
+exports.getBrands = factory.getAll(Brand);
 
-// @desc    Get a single brand by id
-// @route   GET /api/v1/brand/:id
+// @desc    Get specific brand by id
+// @route   GET /api/v1/brands/:id
 // @access  Public
-exports.getBrand = handlersFactory.getOne(Brand);
+exports.getBrand = factory.getOne(Brand);
 
-// @desc    Create a new brand
-// @route   POST /api/v1/brands
+// @desc    Create brand
+// @route   POST  /api/v1/brands
 // @access  Private
-exports.createBrand = handlersFactory.createOne(Brand);
+exports.createBrand = factory.createOne(Brand);
 
-// @desc    Update brand
-// @route   PUT /api/v1/brand/:id
+// @desc    Update specific brand
+// @route   PUT /api/v1/brands/:id
 // @access  Private
-exports.updateBrand = handlersFactory.updateOne(Brand);
+exports.updateBrand = factory.updateOne(Brand);
 
-// @desc    Delete a brand
-// @route   DELETE /api/v1/brandss/:id
+// @desc    Delete specific brand
+// @route   DELETE /api/v1/brands/:id
 // @access  Private
-exports.deleteBrand = handlersFactory.deleteOne(Brand);
+exports.deleteBrand = factory.deleteOne(Brand);

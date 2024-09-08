@@ -1,55 +1,42 @@
-const asyncHandler = require("express-async-handler");
-const SubCategory = require("../models/SubCategoryModel");
-const ErrorHandler = require("../utils/ErrorHandler");
-const APIFeatures = require("../utils/APIFeatures");
-const handlersFactory = require("../services/handlersFactory");
+const factory = require('../services/handlersFactory');
+const SubCategory = require('../models/subCategoryModel');
 
-// @desc    Get all subCategories by category -> nested route
-// @route   GET /api/v1/categories/:categoryId/sub-categories
-// @access  Public
-// filter middleware for getting all subCategories by category
-exports.getAllSubCategoriesByCategoryFilter = (req, res, next) => {
-  let filter = {};
-  if (req.params.categoryId) {
-    filter = { category: req.params.categoryId };
-  }
-  req.filterObj = filter;
+exports.setCategoryIdToBody = (req, res, next) => {
+  // Nested route (Create)
+  if (!req.body.category) req.body.category = req.params.categoryId;
   next();
 };
 
-// @desc    Get all subCategories
+// Nested route
+// GET /api/v1/categories/:categoryId/subcategories
+exports.createFilterObj = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  req.filterObj = filterObject;
+  next();
+};
+
+// @desc    Get list of sub-categories
 // @route   GET /api/v1/sub-categories
 // @access  Public
-exports.getAllSubCategories = handlersFactory.getAll(SubCategory);
+exports.getSubCategories = factory.getAll(SubCategory);
 
-// @desc    Get a single sub category by id
+// @desc    Get specific sub-category by id
 // @route   GET /api/v1/sub-categories/:id
 // @access  Public
-exports.getSubCategory = handlersFactory.getOne(SubCategory);
+exports.getSubCategory = factory.getOne(SubCategory);
 
-// set category to the parent category if not provided (middleware)
-exports.setCategoryIdToParent = (req, res, next) => {
-  if (!req.body.category) {
-    req.body.category = req.params.categoryId;
-  }
-  next();
-};
-
-// @desc    Create a new sub category
-// @route   POST /api/v1/sub-categories
+// @desc    Create subCategory
+// @route   POST  /api/v1/sub-categories
 // @access  Private
+exports.createSubCategory = factory.createOne(SubCategory);
 
-// @desc    Create a new sub category by category -> nested route
-// @route   POST /api/v1/categories/:categoryId/sub-categories
-// @access  Private
-exports.createSubCategory = handlersFactory.createOne(SubCategory);
-
-// @desc    Update sub category
+// @desc    Update specific subcategory
 // @route   PUT /api/v1/sub-categories/:id
 // @access  Private
-exports.updateSubCategory = handlersFactory.updateOne(SubCategory);
+exports.updateSubCategory = factory.updateOne(SubCategory);
 
-// @desc    Delete a sub category
+// @desc    Delete specific subCategory
 // @route   DELETE /api/v1/sub-categories/:id
 // @access  Private
-exports.deleteSubCategory = handlersFactory.deleteOne(SubCategory);
+exports.deleteSubCategory = factory.deleteOne(SubCategory);
