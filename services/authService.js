@@ -175,3 +175,29 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     message: "Password reset code sent to your email",
   });
 });
+
+
+// @desc    Reset password code verification
+// @route   POST /api/v1/auth/verify-password-reset-code
+// @access  Public
+exports.verifyResetCode = asyncHandler(async (req, res, next) => {
+  // get user based on the code
+  const hashedCode = crypto.createHash("sha256").update(req.body.resetCode).digest("hex");
+  const user = await User.findOne({
+    passwordResetCode: hashedCode,
+    passwordResetCodeExpires: { $gt: Date.now() }, // check if the code is not expired with the greater than operator
+  });
+
+  if (!user) {
+    return next(new APIError("Code is invalid or has expired", 400));
+  }
+
+  // verify the code
+  user.passwordResetCodeVerified = true;
+  await user.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Code verified successfully",
+  });
+});
