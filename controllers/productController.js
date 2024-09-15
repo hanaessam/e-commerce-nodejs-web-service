@@ -1,14 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
-const multer = require("multer");
 const sharp = require("sharp");
-const APIError = require("../utils/APIError");
 const factory = require("../services/handlersFactory");
 const Product = require("../models/productModel");
-const {
-  uploadSingleImage,
-  uploadMixOfImages,
-} = require("../middlewares/uploadImageMiddleware");
+const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
 
 // @desc    Get list of products
 // @route   GET /api/v1/products
