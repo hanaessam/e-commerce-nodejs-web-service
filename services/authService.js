@@ -201,3 +201,35 @@ exports.verifyResetCode = asyncHandler(async (req, res, next) => {
     message: "Code verified successfully",
   });
 });
+
+
+// @desc    Reset password
+// @route   PUT /api/v1/auth/reset-password
+// @access  Public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+ const user = await User.findOne({email: req.body.email});
+  if (!user) {
+    return next(new APIError("User not found", 404));
+  }
+  if(user.passwordResetCodeVerified === false) {
+    return next(new APIError("Please verify your code first", 400));
+  }
+
+  // update password
+  user.password = req.body.newPassword;
+
+  // clear reset code
+  user.passwordResetCode = undefined;
+  user.passwordResetCodeExpires = undefined;
+  user.passwordResetCodeVerified = undefined;
+
+  await user.save();
+
+  // generate token
+  const token = generateToken(user._id);
+  res.status(200).json({
+    status: "success",
+    token,
+    message: "Password reset successful",
+  });
+});
