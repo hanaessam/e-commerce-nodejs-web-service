@@ -16,16 +16,37 @@ const {
   resizeBrandImage,
 } = require("../controllers/brandController");
 
+const authService = require("../services/authService");
+
 const router = express.Router();
 
 router
   .route("/")
   .get(getBrands)
-  .post(uploadBrandImage, resizeBrandImage, createBrandValidator, createBrand);
+  .post(
+    authService.protect,
+    authService.allowedTo("admin", "manager"),
+    uploadBrandImage,
+    resizeBrandImage,
+    createBrandValidator,
+    createBrand
+  );
 router
   .route("/:id")
   .get(getBrandValidator, getBrand)
-  .put(uploadBrandImage, resizeBrandImage, updateBrandValidator, updateBrand)
-  .delete(deleteBrandValidator, deleteBrand);
+  .put(
+    authService.protect,
+    authService.allowedTo("admin", "manager"),
+    uploadBrandImage,
+    resizeBrandImage,
+    updateBrandValidator,
+    updateBrand
+  )
+  .delete(
+    authService.protect,
+    authService.allowedTo("admin"),
+    deleteBrandValidator,
+    deleteBrand
+  );
 
 module.exports = router;
