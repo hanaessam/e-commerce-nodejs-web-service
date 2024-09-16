@@ -6,6 +6,7 @@ const APIError = require("../utils/APIError");
 const factory = require("../services/handlersFactory");
 const User = require("../models/userModel");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const generateToken = require("../utils/generateToken");
 
 // @desc    Get list of users
 // @route   GET /api/v1/users
@@ -87,4 +88,72 @@ exports.resizeUserImage = asyncHandler(async (req, res, next) => {
   // save image name to db
   req.body.image = fileName;
   next();
+});
+
+// @desc    Get logged user data (me)
+// @route   GET /api/v1/users/me
+// @access  Private/Protected
+exports.getMe = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+
+// @desc    Update logged user password
+// @route   PUT /api/v1/users/me/change-password
+// @access  Private/Protected
+exports.updateMyPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 12),
+      passwordChangedAt: Date.now(),
+    },
+    {
+      new: true,
+    }
+  );
+  if (!user) {
+    return next(new APIError(`No user with this id ${req.params.id}`, 404));
+  }
+  const token = generateToken(user._id);
+
+  res.status(200).json({ data: user, token });
+});
+
+// @desc    Update logged user data
+// @route   PUT /api/v1/users/me
+// @access  Private/Protected
+exports.updateMe = asyncHandler(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      profileImg: req.body.profileImg,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!updatedUser) {
+    return next(new APIError(`No document for this id ${req.params.id}`, 404));
+  }
+  res.status(200).json({ data: updatedUser });
+});
+
+
+// @desc  deactivate logged user
+// @route DELETE /api/v1/users/me
+// @access Private/Protected
+exports.deactivateMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { active: false },
+  );
+  if (!user) {
+    return next(new APIError(`No user with this id ${req.params.id}`, 404));
+  }
+  res.status(204).json({ data: user });
 });

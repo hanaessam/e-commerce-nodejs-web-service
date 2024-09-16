@@ -5,13 +5,8 @@ const crypto = require("crypto");
 const APIError = require("../utils/APIError");
 const User = require("../models/userModel");
 const sendEmail = require("../utils/sendEmail");
+const generateToken = require("../utils/generateToken");
 
-const generateToken = (payload) => {
-  const token = jwt.sign({ id: payload }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-  return token;
-};
 
 // @desc    Sign up user
 // @route   POST /api/v1/auth/signup
@@ -119,12 +114,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
 exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     // access to the roles array
-    // access the reigstered user role and compare it with the roles array
+    // access the registered user role and compare it with the roles array
     if (!roles.includes(req.user.role)) {
       return next(
         new APIError("You are not allowed to perform this action", 403)
       );
     }
+    next();
   });
 
 // @desc    Forgot password
