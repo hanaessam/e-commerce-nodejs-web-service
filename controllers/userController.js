@@ -157,3 +157,21 @@ exports.deactivateMe = asyncHandler(async (req, res, next) => {
   }
   res.status(204).json({ data: user });
 });
+
+
+// @desc    Activate user
+// @route   PUT /api/v1/users/activate/:id
+// @access  Private/Admin
+exports.activateUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { active: true },
+    { new: true }
+  );
+
+  if (!user) {
+    return next(new APIError(`No user with this id ${req.params.id}`, 404));
+  }
+
+  res.status(200).json({ data: user });
+});

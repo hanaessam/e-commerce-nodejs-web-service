@@ -81,6 +81,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
         )
       );
     }
+      // Check if user is active
+  if (!currentUser.active) {
+    return next(new APIError("Your account has been deactivated. Please contact support.", 403));
+  }
+
 
     // check if the user changed password after the token was issued
     if (currentUser.passwordChangedAt) {

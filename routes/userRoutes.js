@@ -22,6 +22,7 @@ const {
   getMe,
   updateMe,
   deactivateMe,
+  activateUser
 } = require("../controllers/userController");
 
 const authService = require("../services/authService");
@@ -57,5 +58,7 @@ router.put(
   changeUserPasswordValidator,
   changeUserPassword
 );
+
+router.put("/activate/:id",  activateUser);
 
 module.exports = router;
