@@ -23,7 +23,7 @@ exports.addToWishlist = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Remove product from wishlist
-// @route   DELETE /api/v1/wishlist
+// @route   DELETE /api/v1/wishlist/:productId
 // @access  Private/Protected/User
 exports.removeFromWishlist = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(

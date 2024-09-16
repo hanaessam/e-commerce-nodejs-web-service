@@ -16,6 +16,7 @@ const userRoute = require('./routes/userRoutes');
 const authRoute = require('./routes/authRoutes');
 const reviewRoute = require('./routes/reviewRoutes');
 const wishlistRoute = require('./routes/wishlistRoutes');
+const addressesRoute = require('./routes/addressRoutes');
 
 
 dotenv.config({ path: './config.env' });
@@ -42,6 +43,7 @@ app.use('/api/v1/brands', brandRoute);
 app.use('/api/v1/products', productRoute);
 app.use('/api/v1/reviews', reviewRoute);
 app.use('/api/v1/wishlist', wishlistRoute);
+app.use('/api/v1/addresses', addressesRoute);
 
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/auth', authRoute);
