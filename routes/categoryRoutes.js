@@ -44,7 +44,11 @@ router
     updateCategoryValidator,
     updateCategory
   )
-  .delete(   authService.protect,
-    authService.allowedTo("admin"),deleteCategoryValidator, deleteCategory);
+  .delete(
+    authService.protect,
+    authService.allowedTo("admin"),
+    deleteCategoryValidator,
+    deleteCategory
+  );
 
 module.exports = router;
