@@ -1,17 +1,16 @@
-const path = require('path');
-const express = require('express');
-const dotenv = require('dotenv');
-const morgan = require('morgan');
+const path = require("path");
+const express = require("express");
+const dotenv = require("dotenv");
+const morgan = require("morgan");
+
+dotenv.config({ path: "./config.env" });
+
+const APIError = require("./utils/APIError");
+const globalError = require("./middlewares/errorMiddleware");
+const dbConnection = require("./config/database");
+const mountRoutes = require("./routes");
 
 
-const APIError = require('./utils/APIError');
-const globalError = require('./middlewares/errorMiddleware');
-const dbConnection = require('./config/database');
-const mountRoutes = require('./routes');
-
-
-
-dotenv.config({ path: './config.env' });
 
 // Connect with db
 dbConnection();
@@ -21,10 +20,10 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, "uploads")));
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
@@ -33,7 +32,8 @@ mountRoutes(app);
 
 
 
-app.all('*', (req, res, next) => {
+
+app.all("*", (req, res, next) => {
   next(new APIError(`Can't find this route: ${req.originalUrl}`, 400));
 });
 
@@ -46,7 +46,7 @@ const server = app.listen(PORT, () => {
 });
 
 // Handle rejection outside express
-process.on('unhandledRejection', (err) => {
+process.on("unhandledRejection", (err) => {
   console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
   server.close(() => {
     console.error(`Shutting down....`);

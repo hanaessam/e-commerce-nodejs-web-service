@@ -6,37 +6,38 @@ const {
   filterOrderForLoggedUser,
   updateOrderToDelivered,
   updateOrderToPaid,
+  getCheckoutSession,
 } = require("../controllers/orderController");
 const authService = require("../services/authService");
+const {
+  createOrderValidator,
+  getOrderByIdValidator,
+  updateOrderStatusValidator,
+} = require("../utils/validators/orderValidator");
 
 const router = express.Router();
 
-router.post(
-  "/:cartId",
-  authService.protect,
-  authService.allowedTo("user"),
-  createCashOrder
+router.use(authService.protect);
+
+router.post("/:cartId",authService.allowedTo("user"),createOrderValidator,createCashOrder
 );
-router.get(
-  "/",
-  authService.protect,
-  authService.allowedTo("admin", "manager"),
-  filterOrderForLoggedUser,
-  getAllOrders
-);
-router.route("/:id").get(getOrderById);
+router.get( "/",authService.allowedTo("admin", "manager"),
+filterOrderForLoggedUser,getAllOrders);
+
+router.route("/:id").get(getOrderByIdValidator, getOrderById);
 
 router.put(
-  "/:id/delivered",
-  authService.protect,
-  authService.allowedTo("admin", "manager"),
-  updateOrderToDelivered
-);
+  "/:id/delivered",authService.allowedTo("admin", "manager"),
+  updateOrderStatusValidator,updateOrderToDelivered);
+
 router.put(
-  "/:id/paid",
-  authService.protect,
-  authService.allowedTo("admin", "manager"),
-  updateOrderToPaid
+"/:id/paid", authService.allowedTo("admin", "manager"),
+updateOrderStatusValidator,updateOrderToPaid);
+
+router.get(
+  "/checkout-session/:cartId",
+  authService.allowedTo("user"),
+  getCheckoutSession
 );
 
 module.exports = router;
