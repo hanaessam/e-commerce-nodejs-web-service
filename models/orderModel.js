@@ -46,4 +46,12 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+orderSchema.pre(/^find/, function (next) {
+  this.populate({path: "user", select: "name profileImg email phone"}).populate({
+    path: "items.product",
+    select: "title price imageCover ratingsAverage",
+  });
+  next();
+});
+
 module.exports = mongoose.model("Order", orderSchema);

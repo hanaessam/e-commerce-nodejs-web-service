@@ -3,6 +3,7 @@ const Order = require("../models/orderModel");
 const APIError = require("../utils/APIError");
 const Cart = require("../models/cartModel");
 const Product = require("../models/productModel");
+const factory = require("../services/handlersFactory");
 
 // @desc    Create Cash Order
 // @route   POST /api/orders/cartId
@@ -47,4 +48,52 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     status: "success",
     data: order,
   });
+});
+
+exports.filterOrderForLoggedUser = asyncHandler(async (req, res, next) => {
+  if (req.user.role === "user") req.filterObj = { user: req.user._id };
+  next();
+});
+
+// @desc    Get All Orders
+// @route   GET /api/orders
+// @access  Protected/Admin-Manager
+exports.getAllOrders = factory.getAll(Order);
+
+// @desc    Get Order By Id
+// @route   GET /api/orders/:id
+// @access  Protected/User-Admin-Manager
+exports.getOrderById = factory.getOne(Order);
+
+// @desc    Update Paid Status of Order
+// @route   PUT /api/orders/:id/paid
+// @access  Protected/Admin-Manager
+exports.updateOrderToPaid = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new APIError(`No order is found with this id ${req.params.id}`, 404)
+    );
+  }
+  order.isPaid = true;
+  order.paidAt = Date.now();
+  const updatedOrder = await order.save();
+
+  res.status(200).json({ message: "Order is paid!", data: updatedOrder });
+});
+
+// @desc    Update Delivered Status of Order
+// @route   PUT /api/orders/:id/delivered
+// @access  Protected/Admin-Manager
+exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new APIError(`No order is found with this id ${req.params.id}`, 404)
+    );
+  }
+  order.isDelivered = true;
+  order.deliveredAt = Date.now();
+  const updatedOrder = await order.save();
+  res.status(200).json({ message: "Order is delivered!", data: updatedOrder });
 });
