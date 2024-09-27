@@ -136,7 +136,7 @@ exports.getCheckoutSession = asyncHandler(async (req, res, next) => {
       },
     ],
     mode: "payment",
-    success_url: `${req.protocol}://${req.get("host")}/api/v1/orders`,
+    success_url: `${req.protocol}://${req.get("host")}/api/v1/orders/my-orders`,
     cancel_url: `${req.protocol}://${req.get("host")}/api/v1/cart/`,
     customer_email: req.user.email,
     client_reference_id: req.params.cartId,
@@ -223,4 +223,23 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   }
 
   res.status(200).json({ received: true });
+});
+
+
+
+// @desc    Get all orders of the logged-in user
+// @route   GET /api/orders/my-orders
+// @access  Protected/User
+exports.getMyOrders = asyncHandler(async (req, res, next) => {
+  const orders = await Order.find({ user: req.user._id });
+
+  if (!orders) {
+    return next(new APIError('No orders found for this user', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    results: orders.length,
+    data: orders,
+  });
 });

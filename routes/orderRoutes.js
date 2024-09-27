@@ -7,6 +7,7 @@ const {
   updateOrderToDelivered,
   updateOrderToPaid,
   getCheckoutSession,
+  getMyOrders
 } = require("../controllers/orderController");
 const authService = require("../services/authService");
 const {
@@ -18,6 +19,8 @@ const {
 const router = express.Router();
 
 router.use(authService.protect);
+
+router.get("/my-orders", authService.allowedTo("user"), getMyOrders);
 
 router.post("/:cartId",authService.allowedTo("user"),createOrderValidator,createCashOrder
 );
