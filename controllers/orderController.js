@@ -188,10 +188,7 @@ const createCardOrder = async (session) => {
   await Cart.findByIdAndDelete(cartId);
 
   // 6- send order
-  res.status(201).json({
-    status: "success",
-    data: order,
-  });
+  return order;
 }
 
 
@@ -213,7 +210,8 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   }
 
   if(event.type === 'checkout.session.completed') {
-    await createCardOrder(event.data.object);
+    const order = await createCardOrder(event.data.object);
+    res.status(200).json({received: true, data: order});
   }
 
   res.status(200).json({received: true, data: event});
