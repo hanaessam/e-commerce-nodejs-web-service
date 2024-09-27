@@ -120,4 +120,6 @@ productSchema.virtual("reviews", {
   localField: "_id",
 });
 
-module.exports = mongoose.model("Product", productSchema);
+
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product;

@@ -29,4 +29,6 @@ subCategorySchema.pre(/^find/, function (next) {
   next();
 });
 
-module.exports = mongoose.model('SubCategory', subCategorySchema);
+const SubCategory = mongoose.model('SubCategory', subCategorySchema);
+
+module.exports = SubCategory;

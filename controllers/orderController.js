@@ -3,6 +3,7 @@ const Order = require("../models/orderModel");
 const APIError = require("../utils/APIError");
 const Cart = require("../models/cartModel");
 const Product = require("../models/productModel");
+const User = require("../models/userModel");
 const factory = require("../services/handlersFactory");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -150,6 +151,50 @@ exports.getCheckoutSession = asyncHandler(async (req, res, next) => {
 });
 
 
+// @desc    Create Order after checkout
+// @route   POST /api/orders
+// @access  Protected/User
+const createCardOrder = async (session) => {
+  const cartId = session.client_reference_id;
+  const shippingAddress = session.metadata;
+  const orderPrice = session.amount_total / 100;
+
+  const cart = await Cart.findById(cartId);
+  
+  const user = await User.findOne({email: session.customer_email});
+
+
+  // create order
+  const order = await Order.create({
+    user: user._id,
+    items: cart.items,
+    shippingAddress: shippingAddress,
+    totalPrice: orderPrice,
+    payment: "card",
+    isPaid: true,
+    paidAt: Date.now(),
+  });
+
+  const bulkOptions = cart.items.map((item) => ({
+    updateOne: {
+      filter: { _id: item.product },
+      update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
+    },
+  }));
+
+  await Product.bulkWrite(bulkOptions, {});
+  // 5- clear cart
+
+  await Cart.findByIdAndDelete(cartId);
+
+  // 6- send order
+  res.status(201).json({
+    status: "success",
+    data: order,
+  });
+}
+
+
 // @desc    Webhook endpoint for stripe
 // @route   POST /api/orders/webhook
 // @access  Public
@@ -167,7 +212,10 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   if(event.type === 'checkout.session.completed') {
-    console.log("Create Order here");
-    
+    // create order
+    const session = event.data.object;
+    createCardOrder(session);
   }
+
+  res.status(200).json({received: true, data: event});
 });
