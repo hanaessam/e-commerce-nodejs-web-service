@@ -8,6 +8,7 @@
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [API Endpoints](#api-endpoints)
+- [Live Server](#live-server)
 
 
 ## Introduction
@@ -85,4 +86,36 @@ npm run start:dev
 Here's the published APIs Collection on postman:
 
 https://documenter.getpostman.com/view/29107157/2sAXqy3zBa
+
+
+## Live Server
+
+Server is hosted and deployed on Vercel
+
+Live Server's Link: https://node-js-e-commerce-app.vercel.app/
+
+You can add a production environemnt in your postman collection and test it with the base_url of https://node-js-e-commerce-app.vercel.app/ 
+
+
+### How to deploy and run on vercel:
+
+1. **Make an account on vercel.com**
+
+2. **In your terminal run the command:**
+
+```sh
+    vercel deploy
+```
+Follow the instructions of Vercel CLI deployemnt 
+
+3. **Go to your projects on Vercel**
+
+You can connect the project's source code on github to your project
+Any changes on the main branch on github will trigger a build on vercel's server
+
+After making a change and pushing changes to main, you need to run this in your terminal:
+
+```sh
+    vercel --prod
+```
 
