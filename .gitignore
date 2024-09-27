@@ -5,4 +5,5 @@ config.env
 .eslintrc.json
 
 .vscode/
+.vercel/
 .vercel

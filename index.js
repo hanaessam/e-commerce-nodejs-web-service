@@ -12,6 +12,7 @@ const globalError = require("./middlewares/errorMiddleware");
 const dbConnection = require("./config/database");
 const mountRoutes = require("./routes");
 
+const { webhookCheckout } = require("./controllers/orderController");
 
 // Connect with db
 dbConnection();
@@ -26,6 +27,9 @@ app.options("*", cors());
 // Enable response compression
 app.use(compression());
 
+// Checkout webhook
+app.post("/api/v1/webhook-checkout", express.raw({ type: "application/json" }), webhookCheckout);
+
 // Middlewares
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "uploads")));
@@ -35,6 +39,11 @@ if (process.env.NODE_ENV === "development") {
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
+
+// Add a default route for the root URL
+app.get("/", (req, res) => {
+  res.send("Welcome to the API");
+});
 // Mount Routes
 mountRoutes(app);
 
