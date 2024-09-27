@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const cors = require("cors");
+const compression = require("compression");
 
 dotenv.config({ path: "./config.env" });
 
@@ -11,12 +13,18 @@ const dbConnection = require("./config/database");
 const mountRoutes = require("./routes");
 
 
-
 // Connect with db
 dbConnection();
 
 // express app
 const app = express();
+
+// Enable CORS
+app.use(cors());
+app.options("*", cors());
+
+// Enable response compression
+app.use(compression());
 
 // Middlewares
 app.use(express.json());
